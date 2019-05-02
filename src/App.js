@@ -1,38 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
-const schedule = {
-  title: "CS Courses for 2018-2019",
-  courses: [
-    {
-      "id": "F101",
-      "title": "Computer Science: Concepts, Philosophy, and Connections",
-      "days": "MWF",
-      "start": "11:00",
-      "end": "11:50"
-    },
-    {
-      "id": "F110",
-      "title": "Intro Programming for non-majors",
-      "days": "MWF",
-      "start": "10:00",
-      "end": "10:50"
-    },
-    {
-      "id": "F111",
-      "title": "Fundamentals of Computer Programming I",
-      "days": "MWF",
-      "start": "13:00",
-      "end": "13:50"
-    },
-    {
-      "id": "F211",
-      "title": "Fundamentals of Computer Programming II",
-      "days": "TuTh",
-      "start": "12:30",
-      "end": "13:50"
-    }
-  ]
-};
+const Banner = ({ title }) => (
+  <h1 className="title">{ title || '[loading...]' }</h1>
+);
 
 const terms = {
   F: 'Fall',
@@ -46,10 +16,6 @@ const getCourseTerm = course => (
 
 const getCourseNumber = course => (
   course.id.slice(1, 4)
-);
-
-const Banner = ({ title }) => (
-  <h1 className="title">{ title }</h1>
 );
 
 const Course = ({ course }) => (
@@ -66,13 +32,28 @@ const CourseList = ({ courses }) => (
   </ul>
 );
 
-const App = () => (
-  <section>
-    <div className="container menu">
-      <Banner title={ schedule.title } />
-      <CourseList courses = { schedule.courses } />
-    </div>
-  </section>
-);
+const App = () => {
+  const [schedule, setSchedule] = useState({ title: '', courses: [] });
+  const url = 'https://www.cs.northwestern.edu/academics/courses/394/data/cs-courses.php';
+
+  useEffect(() => {
+    const fetchSchedule = async () => {
+      const response = await fetch(url);
+      if (!response.ok) throw response;
+      const json = await response.json();
+      setSchedule(json);
+    }
+    fetchSchedule();
+  }, [])
+
+  return (
+    <section>
+      <div className="container menu">
+        <Banner title={ schedule.title } />
+        <CourseList courses = { schedule.courses } />
+      </div>
+    </section>
+  )
+}
 
 export default App;
