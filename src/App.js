@@ -34,23 +34,6 @@ const schedule = {
   ]
 };
 
-const App = () => (
-  <div>
-    <Banner title={ schedule.title } />
-    <CourseList courses = { schedule.courses } />
-  </div>
-);
-
-const Banner = ({ title }) => (
-  <h1>{ title }</h1>
-);
-
-const CourseList = ({ courses }) => (
-  <ul className="menu-list">
-    { courses.map(course => <Course course={ course } />) }
-  </ul>
-);
-
 const terms = {
   F: 'Fall',
   W: 'Winter',
@@ -65,10 +48,31 @@ const getCourseNumber = course => (
   course.id.slice(1, 4)
 );
 
-const Course = ({ course }) => (
-  <li>{ getCourseTerm(course) } CS { getCourseNumber(course) }: { course.title }</li>
+const Banner = ({ title }) => (
+  <h1 className="title">{ title }</h1>
 );
 
+const Course = ({ course }) => (
+  <li className="menu-item">
+    <button className="button">
+      { getCourseTerm(course) } CS { getCourseNumber(course) }: { course.title }
+    </button>
+  </li>
+);
 
+const CourseList = ({ courses }) => (
+  <ul className="menu-list buttons">
+    { courses.map(course => <Course key={ course.id } course={ course } />) }
+  </ul>
+);
+
+const App = () => (
+  <section>
+    <div className="container menu">
+      <Banner title={ schedule.title } />
+      <CourseList courses = { schedule.courses } />
+    </div>
+  </section>
+);
 
 export default App;
